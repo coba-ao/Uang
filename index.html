@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanKu - Aplikasi Perencanaan Keuangan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .date-time {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .income .card-icon {
+            background-color: var(--secondary);
+        }
+
+        .expense .card-icon {
+            background-color: var(--danger);
+        }
+
+        .balance .card-icon {
+            background-color: var(--primary);
+        }
+
+        .saving .card-icon {
+            background-color: var(--warning);
+        }
+
+        .total-balance .card-icon {
+            background-color: #8b5cf6;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .card-change {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .positive {
+            color: var(--secondary);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        input[type="text"]#transactionAmount,
+        input[type="text"]#savingAmount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .transaction-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.3s ease;
+        }
+
+        .transaction-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .transaction-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .transaction-info h4 {
+            margin-bottom: 3px;
+        }
+
+        .transaction-info p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .transaction-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--secondary);
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #d1d5db;
+        }
+
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+            position: relative;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--secondary);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .month-summary {
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .month-summary h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .transaction-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .transaction-actions {
+                align-self: flex-end;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-wallet"></i>
+                <span>PlanKu</span>
+            </div>
+            <div class="user-info">
+                <div class="date-time" id="dateTime"></div>
+                <div>
+                    <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Cards -->
+        <div class="dashboard">
+            <div class="card income">
+                <div class="card-header">
+                    <div class="card-title">Pemasukan Bulan Ini</div>
+                    <div class="card-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="totalIncome">Rp 0</div>
+                <div class="card-change" id="incomeChange">
+                    <i class="fas fa-arrow-up"></i> 0% dari bulan lalu
+                </div>
+            </div>
+
+            <div class="card expense">
+                <div class="card-header">
+                    <div class="card-title">Pengeluaran Bulan Ini</div>
+                    <div class="card-icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="totalExpense">Rp 0</div>
+                <div class="card-change" id="expenseChange">
+                    <i class="fas fa-arrow-down"></i> 0% dari bulan lalu
+                </div>
+            </div>
+
+            <div class="card balance">
+                <div class="card-header">
+                    <div class="card-title">Saldo Bulan Ini</div>
+                    <div class="card-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="currentBalance">Rp 0</div>
+                <div class="card-change" id="balanceChange">
+                    <i class="fas fa-arrow-up"></i> 0% dari bulan lalu
+                </div>
+            </div>
+
+            <div class="card total-balance">
+                <div class="card-header">
+                    <div class="card-title">Total Saldo Keseluruhan</div>
+                    <div class="card-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+                <div class="card-value" id="totalBalance">Rp 0</div>
+                <div class="card-change">
+                    Semua waktu
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="transactions">
+                <i class="fas fa-exchange-alt"></i> Transaksi
+            </div>
+            <div class="tab" data-tab="savings">
+                <i class="fas fa-piggy-bank"></i> Target Tabungan
+            </div>
+            <div class="tab" data-tab="reports">
+                <i class="fas fa-chart-pie"></i> Laporan
+            </div>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-content active" id="transactions">
+            <div class="card">
+                <h3 style="margin-bottom: 20px;">Tambah Transaksi Baru</h3>
+                <form id="transactionForm">
+                    <div class="form-group">
+                        <label for="transactionType">Jenis Transaksi</label>
+                        <select id="transactionType" required>
+                            <option value="income">Pemasukan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionAmount">Jumlah (Rp)</label>
+                        <input type="text" id="transactionAmount" placeholder="Contoh: 450.000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionCategory">Kategori</label>
+                        <select id="transactionCategory" required>
+                            <option value="">Pilih kategori</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDate">Tanggal</label>
+                        <input type="date" id="transactionDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionDescription">Deskripsi</label>
+                        <textarea id="transactionDescription" rows="3" placeholder="Tambahkan deskripsi (opsional)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan Transaksi
+                    </button>
+                </form>
+            </div>
+
+            <div class="card transaction-list">
+                <h3 style="margin-bottom: 20px;">Riwayat Transaksi</h3>
+                <div class="filter-container">
+                    <div style="flex: 1;">
+                        <label for="monthFilter">Filter Bulan</label>
+                        <select id="monthFilter">
+                            <option value="all">Semua Bulan</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="yearFilter">Filter Tahun</label>
+                        <select id="yearFilter">
+                            <option value="all">Semua Tahun</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="transactionList">
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>Belum ada transaksi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="savings">
+            <div class="card">
+                <h3 style="margin-bottom: 20px;">Atur Target Tabungan</h3>
+                <form id="savingForm">
+                    <div class="form-group">
+                        <label for="savingName">Nama Target</label>
+                        <input type="text" id="savingName" placeholder="Contoh: Liburan ke Bali" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="savingAmount">Target Jumlah (Rp)</label>
+                        <input type="text" id="savingAmount" placeholder="Contoh: 10.000.000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="savingDate">Target Tanggal</label>
+                        <input type="date" id="savingDate" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan Target
+                    </button>
+                </form>
+            </div>
+
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 20px;">Progress Target Tabungan</h3>
+                <div id="savingProgress">
+                    <div class="empty-state">
+                        <i class="fas fa-piggy-bank"></i>
+                        <p>Belum ada target tabungan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="reports">
+            <div class="card">
+                <h3 style="margin-bottom: 20px;">Laporan Keuangan</h3>
+                <div class="chart-container">
+                    <canvas id="financeChart"></canvas>
+                </div>
+                <div style="margin-top: 30px;">
+                    <h4 style="margin-bottom: 15px;">Ringkasan Bulan Ini</h4>
+                    <div id="monthlySummary">
+                        <p>Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Global variables
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+        let savings = JSON.parse(localStorage.getItem('savings')) || null;
+        let financeChart = null;
+
+        // Categories
+        const incomeCategories = ['Gaji', 'Bonus', 'Investasi', 'Hadiah', 'Lainnya'];
+        const expenseCategories = ['Makanan', 'Transportasi', 'Belanja', 'Hiburan', 'Kesehatan', 'Pendidikan', 'Tagihan', 'Lainnya'];
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            // Set today's date as default
+            document.getElementById('transactionDate').valueAsDate = new Date();
+            
+            // Update category options based on transaction type
+            document.getElementById('transactionType').addEventListener('change', updateCategoryOptions);
+            updateCategoryOptions();
+            
+            // Format input amount saat mengetik
+            document.getElementById('transactionAmount').addEventListener('input', function() {
+                formatInputNumber(this);
+            });
+            
+            document.getElementById('savingAmount').addEventListener('input', function() {
+                formatInputNumber(this);
+            });
+            
+            // Initialize filters
+            populateFilters();
+            document.getElementById('monthFilter').addEventListener('change', renderTransactions);
+            document.getElementById('yearFilter').addEventListener('change', renderTransactions);
+            
+            // Load data
+            updateDashboard();
+            renderTransactions();
+            renderSavings();
+            initChart();
+            
+            // Form submissions
+            document.getElementById('transactionForm').addEventListener('submit', addTransaction);
+            document.getElementById('savingForm').addEventListener('submit', addSavingTarget);
+            
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.dataset.tab);
+                });
+            });
+        });
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('dateTime').textContent = now.toLocaleDateString('id-ID', options);
+        }
+
+        // Format input number while typing
+        function formatInputNumber(input) {
+            // Hapus semua karakter kecuali angka
+            let value = input.value.replace(/[^\d]/g, '');
+            // Format dengan titik sebagai pemisah ribuan
+            if (value) {
+                value = parseInt(value).toLocaleString('id-ID');
+            }
+            input.value = value;
+        }
+
+        // Parse formatted number back to integer
+        function parseFormattedNumber(formattedString) {
+            return parseInt(formattedString.replace(/[^\d]/g, '')) || 0;
+        }
+
+        // Populate month and year filters
+        function populateFilters() {
+            const monthFilter = document.getElementById('monthFilter');
+            const yearFilter = document.getElementById('yearFilter');
+            
+            // Get unique months and years from transactions
+            const months = new Set();
+            const years = new Set();
+            
+            transactions.forEach(t => {
+                const date = new Date(t.date);
+                months.add(date.getMonth());
+                years.add(date.getFullYear());
+            });
+            
+            // Add current month and year if not present
+            const now = new Date();
+            months.add(now.getMonth());
+            years.add(now.getFullYear());
+            
+            // Populate month filter
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                               'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            Array.from(months).sort((a, b) => a - b).forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = monthNames[month];
+                monthFilter.appendChild(option);
+            });
+            
+            // Set current month as selected
+            monthFilter.value = now.getMonth();
+            
+            // Populate year filter
+            Array.from(years).sort((a, b) => b - a).forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+            
+            // Set current year as selected
+            yearFilter.value = now.getFullYear();
+        }
+
+        // Update category options
+        function updateCategoryOptions() {
+            const type = document.getElementById('transactionType').value;
+            const categorySelect = document.getElementById('transactionCategory');
+            const categories = type === 'income' ? incomeCategories : expenseCategories;
+            
+            categorySelect.innerHTML = '<option value="">Pilih kategori</option>';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'reports') {
+                updateChart();
+            }
+        }
+
+        // Add transaction
+        function addTransaction(e) {
+            e.preventDefault();
+            
+            const type = document.getElementById('transactionType').value;
+            // Parse formatted amount
+            const amount = parseFormattedNumber(document.getElementById('transactionAmount').value);
+            const category = document.getElementById('transactionCategory').value;
+            const date = document.getElementById('transactionDate').value;
+            const description = document.getElementById('transactionDescription').value;
+            
+            // Validasi amount
+            if (amount <= 0) {
+                showNotification('Masukkan jumlah yang valid!', 'error');
+                return;
+            }
+            
+            const transaction = {
+                id: Date.now(),
+                type,
+                amount,
+                category,
+                date,
+                description,
+                timestamp: new Date().toISOString()
+            };
+            
+            transactions.push(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            
+            // Reset form
+            document.getElementById('transactionForm').reset();
+            document.getElementById('transactionDate').valueAsDate = new Date();
+            
+            // Update filters if new month/year
+            populateFilters();
+            
+            // Update UI
+            updateDashboard();
+            renderTransactions();
+            showNotification('Transaksi berhasil ditambahkan!', 'success');
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            const lastYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+            
+            // Current month transactions
+            const currentMonthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            });
+            
+            // Last month transactions
+            const lastMonthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === lastMonth && tDate.getFullYear() === lastYear;
+            });
+            
+            // Calculate current month values
+            const currentIncome = currentMonthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const currentExpense = currentMonthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const currentBalance = currentIncome - currentExpense;
+            
+            // Calculate last month values
+            const lastIncome = lastMonthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const lastExpense = lastMonthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const lastBalance = lastIncome - lastExpense;
+            
+            // Calculate percentages
+            const incomeChange = lastIncome > 0 ? ((currentIncome - lastIncome) / lastIncome * 100) : 0;
+            const expenseChange = lastExpense > 0 ? ((currentExpense - lastExpense) / lastExpense * 100) : 0;
+            const balanceChange = lastBalance !== 0 ? ((currentBalance - lastBalance) / Math.abs(lastBalance) * 100) : 0;
+            
+            // Update current month cards
+            document.getElementById('totalIncome').textContent = formatCurrency(currentIncome);
+            document.getElementById('totalExpense').textContent = formatCurrency(currentExpense);
+            document.getElementById('currentBalance').textContent = formatCurrency(currentBalance);
+            
+            // Update change indicators
+            updateChangeIndicator('incomeChange', incomeChange);
+            updateChangeIndicator('expenseChange', expenseChange, true);
+            updateChangeIndicator('balanceChange', balanceChange);
+            
+            // Calculate and update total balance (all time)
+            const totalIncome = transactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const totalExpense = transactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const totalBalance = totalIncome - totalExpense;
+            document.getElementById('totalBalance').textContent = formatCurrency(totalBalance);
+            
+            // Update saving target
+            if (savings) {
+                document.getElementById('savingTarget').textContent = formatCurrency(savings.amount);
+                const progress = Math.min((currentBalance / savings.amount) * 100, 100);
+                document.querySelector('.saving .card-change').innerHTML = `<i class="fas fa-percentage"></i> ${progress.toFixed(1)}% tercapai`;
+            }
+        }
+
+        // Update change indicator
+        function updateChangeIndicator(elementId, percentage, isInverted = false) {
+            const element = document.getElementById(elementId);
+            const isPositive = percentage >= 0;
+            
+            if (isInverted) {
+                // For expenses, lower is better
+                element.className = `card-change ${isPositive ? 'negative' : 'positive'}`;
+                element.innerHTML = `<i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i> ${Math.abs(percentage).toFixed(1)}% dari bulan lalu`;
+            } else {
+                // For income and balance, higher is better
+                element.className = `card-change ${isPositive ? 'positive' : 'negative'}`;
+                element.innerHTML = `<i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i> ${Math.abs(percentage).toFixed(1)}% dari bulan lalu`;
+            }
+        }
+
+        // Render transactions
+        function renderTransactions() {
+            const container = document.getElementById('transactionList');
+            const monthFilter = document.getElementById('monthFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            
+            // Filter transactions
+            let filteredTransactions = [...transactions];
+            
+            if (monthFilter !== 'all') {
+                filteredTransactions = filteredTransactions.filter(t => {
+                    const tDate = new Date(t.date);
+                    return tDate.getMonth() === parseInt(monthFilter);
+                });
+            }
+            
+            if (yearFilter !== 'all') {
+                filteredTransactions = filteredTransactions.filter(t => {
+                    const tDate = new Date(t.date);
+                    return tDate.getFullYear() === parseInt(yearFilter);
+                });
+            }
+            
+            if (filteredTransactions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-receipt"></i>
+                        <p>Tidak ada transaksi untuk periode ini</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group transactions by month
+            const groupedTransactions = {};
+            filteredTransactions.forEach(t => {
+                const date = new Date(t.date);
+                const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+                
+                if (!groupedTransactions[monthKey]) {
+                    groupedTransactions[monthKey] = [];
+                }
+                
+                groupedTransactions[monthKey].push(t);
+            });
+            
+            // Sort months
+            const sortedMonths = Object.keys(groupedTransactions).sort((a, b) => {
+                const [yearA, monthA] = a.split('-').map(Number);
+                const [yearB, monthB] = b.split('-').map(Number);
+                
+                if (yearA !== yearB) {
+                    return yearB - yearA;
+                }
+                
+                return monthB - monthA;
+            });
+            
+            // Render grouped transactions
+            container.innerHTML = sortedMonths.map(monthKey => {
+                const [year, month] = monthKey.split('-').map(Number);
+                const monthTransactions = groupedTransactions[monthKey];
+                const monthName = new Date(year, month).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+                
+                // Calculate month summary
+                const monthIncome = monthTransactions
+                    .filter(t => t.type === 'income')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const monthExpense = monthTransactions
+                    .filter(t => t.type === 'expense')
+                    .reduce((sum, t) => sum + t.amount, 0);
+                
+                const monthBalance = monthIncome - monthExpense;
+                
+                // Sort transactions by date (newest first)
+                const sortedTransactions = [...monthTransactions].sort((a, b) => 
+                    new Date(b.date) - new Date(a.date)
+                );
+                
+                return `
+                    <div class="month-summary">
+                        <h4>${monthName}</h4>
+                        <div class="summary-row">
+                            <span>Pemasukan:</span>
+                            <span class="positive">${formatCurrency(monthIncome)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Pengeluaran:</span>
+                            <span class="negative">${formatCurrency(monthExpense)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Saldo:</span>
+                            <span class="${monthBalance >= 0 ? 'positive' : 'negative'}">${formatCurrency(monthBalance)}</span>
+                        </div>
+                    </div>
+                    ${sortedTransactions.map(t => {
+                        const isIncome = t.type === 'income';
+                        const icon = isIncome ? 'fa-arrow-up' : 'fa-arrow-down';
+                        const iconColor = isIncome ? 'var(--secondary)' : 'var(--danger)';
+                        const amountClass = isIncome ? 'positive' : 'negative';
+                        
+                        return `
+                            <div class="transaction-item">
+                                <div class="transaction-details">
+                                    <div class="transaction-icon" style="background-color: ${iconColor}">
+                                        <i class="fas ${icon}"></i>
+                                    </div>
+                                    <div class="transaction-info">
+                                        <h4>${t.category}</h4>
+                                        <p>${formatDate(t.date)} ${t.description ? '• ' + t.description : ''}</p>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <div class="transaction-amount ${amountClass}">
+                                        ${isIncome ? '+' : '-'}${formatCurrency(t.amount)}
+                                    </div>
+                                    <div class="transaction-actions">
+                                        <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${t.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+            }).join('');
+        }
+
+        // Delete transaction
+        function deleteTransaction(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                
+                updateDashboard();
+                renderTransactions();
+                showNotification('Transaksi berhasil dihapus!', 'success');
+            }
+        }
+
+        // Add saving target
+        function addSavingTarget(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('savingName').value;
+            // Parse formatted amount
+            const amount = parseFormattedNumber(document.getElementById('savingAmount').value);
+            const date = document.getElementById('savingDate').value;
+            
+            // Validasi amount
+            if (amount <= 0) {
+                showNotification('Masukkan jumlah target yang valid!', 'error');
+                return;
+            }
+            
+            savings = {
+                id: Date.now(),
+                name,
+                amount,
+                date,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('savings', JSON.stringify(savings));
+            
+            // Reset form
+            document.getElementById('savingForm').reset();
+            
+            // Update UI
+            updateDashboard();
+            renderSavings();
+            showNotification('Target tabungan berhasil disimpan!', 'success');
+        }
+
+        // Render savings
+        function renderSavings() {
+            const container = document.getElementById('savingProgress');
+            
+            if (!savings) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-piggy-bank"></i>
+                        <p>Belum ada target tabungan</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            });
+            
+            const income = monthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const expense = monthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const balance = income - expense;
+            const progress = Math.min((balance / savings.amount) * 100, 100);
+            
+            const targetDate = new Date(savings.date);
+            const daysLeft = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+            
+            container.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h4>${savings.name}</h4>
+                    <p style="color: #6b7280; margin-top: 5px;">
+                        Target: ${formatCurrency(savings.amount)} • Tenggat: ${formatDate(savings.date)}
+                    </p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>${formatCurrency(balance)} terkumpul</span>
+                        <span>${progress.toFixed(1)}%</span>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+                    <span style="color: #6b7280;">
+                        <i class="fas fa-calendar-alt"></i> ${daysLeft} hari tersisa
+                    </span>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSaving()">
+                        <i class="fas fa-trash"></i> Hapus Target
+                    </button>
+                </div>
+            `;
+        }
+
+        // Delete saving target
+        function deleteSaving() {
+            if (confirm('Apakah Anda yakin ingin menghapus target tabungan ini?')) {
+                savings = null;
+                localStorage.removeItem('savings');
+                
+                updateDashboard();
+                renderSavings();
+                showNotification('Target tabungan berhasil dihapus!', 'success');
+            }
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            financeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#4f46e5',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#ec4899',
+                            '#06b6d4',
+                            '#84cc16'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart
+        function updateChart() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthTransactions = transactions.filter(t => {
+                const tDate = new Date(t.date);
+                return tDate.getMonth() === currentMonth && tDate.getFullYear() === currentYear;
+            });
+            
+            // Group expenses by category
+            const expensesByCategory = {};
+            monthTransactions
+                .filter(t => t.type === 'expense')
+                .forEach(t => {
+                    if (!expensesByCategory[t.category]) {
+                        expensesByCategory[t.category] = 0;
+                    }
+                    expensesByCategory[t.category] += t.amount;
+                });
+            
+            const labels = Object.keys(expensesByCategory);
+            const data = Object.values(expensesByCategory);
+            
+            financeChart.data.labels = labels;
+            financeChart.data.datasets[0].data = data;
+            financeChart.update();
+            
+            // Update monthly summary
+            const income = monthTransactions
+                .filter(t => t.type === 'income')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const expense = monthTransactions
+                .filter(t => t.type === 'expense')
+                .reduce((sum, t) => sum + t.amount, 0);
+            
+            const balance = income - expense;
+            
+            document.getElementById('monthlySummary').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <p style="color: #6b7280; font-size: 14px;">Total Pemasukan</p>
+                        <p style="font-size: 18px; font-weight: 600; color: var(--secondary);">${formatCurrency(income)}</p>
+                    </div>
+                    <div>
+                        <p style="color: #6b7280; font-size: 14px;">Total Pengeluaran</p>
+                        <p style="font-size: 18px; font-weight: 600; color: var(--danger);">${formatCurrency(expense)}</p>
+                    </div>
+                    <div>
+                        <p style="color: #6b7280; font-size: 14px;">Saldo Bersih</p>
+                        <p style="font-size: 18px; font-weight: 600; color: ${balance >= 0 ? 'var(--secondary)' : 'var(--danger)'};">${formatCurrency(balance)}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
